@@ -141,12 +141,10 @@
                     let str="";//실제 div에 출력될 문자열
                     if(n>=getStartDayOfWeek() && d<=getLastDayOfMonth()-1){ //각 월의 시작 요일 부터는..날짜를 센다...
                         d++;
-                        cell.text=str;
                         str=d;//날짜 범위 내에 잇을때는 날짜를 대입...
-                        cell.div.innerText=str;
-                    }else{
-                        str="";
                     }
+                    cell.text=str;
+                    cell.div.innerText=str;
                     n++;
                 }
             }
