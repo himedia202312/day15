@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #wrapper{
+            width:700px;
+            height:650px;
+            background-color: rgb(96, 207, 96);
+            margin: auto;
+        }
+        #header{
+            width:100%;
+            height:50px;
+            background-color: aqua;
+            line-height: 50px;
+            text-align: center;
+        }
+        #content{
+            width:100%;
+            height:600px;
+            position: relative;
+        }
+    </style>
+    <script src="../lib/common.js"></script>
+    <script>
+        let content;
+        let title; //달력의 제목 영역
+
+        //공유될 날짜 객체
+        let currentDate = new Date();
+
+        //생성된 셀들을 추후 접근하기 위해 배열에 담아놓자 
+        let cellArray=[];
+
+        //달력의 날짜를 이루는 셀박스를 정의한다
+        class Cell{
+            constructor(container, x, y, width, height, text, bg){
+                this.container=container;
+                this.div=document.createElement("div");
+                this.x=x;
+                this.y=y;
+                this.width=width;
+                this.height=height;
+                this.text=text;             
+                this.bg=bg;
+                
+                //부모 요소에 부착 
+                this.container.appendChild(this.div);
+
+                //스타일 
+                this.div.style.position="absolute";
+                this.div.style.left=this.x+"px";
+                this.div.style.top=this.y+"px";
+
+                this.div.style.width=this.width+"px";
+                this.div.style.height=this.height+"px";
+                this.div.style.background=this.bg;
+                this.div.innerText=this.text;
+                this.div.style.border="1px solid gray";
+                this.div.style.boxSizing="border-box";
+
+            }
+        }
+
+        //연도, 월 출력 
+        function printTitle(){
+            let yy=currentDate.getFullYear();
+            let mm=currentDate.getMonth(); // 0~11 까지 
+            
+            //월은 비록 0부터 시작하지만, 일반인들에게 시각화시킬때는
+            //+1을 해주는 습관 
+            title.innerText=yy+"년  "+getNumString(mm+1)+"월";
+        }
+
+        //이전 월처리 
+        function prev(){
+            let mm = currentDate.getMonth(); //현재 월
+            currentDate.setMonth(mm-1); 
+            printTitle();           
+        }
+
+        //다음 월 처리 (현재 사용중인 날짜객체의 다음 월로 세팅)
+        function next(){
+            let mm = currentDate.getMonth(); //현재 월
+            currentDate.setMonth(mm+1); 
+            printTitle();
+        }
+        
+        //달력에 날짜를 출력하기 위해서는 개발자가 2가지 정보를 알아야 한다
+        //1) 각 월은 무슨 요일부터 시작하는가?  (반복의 시작값)
+        //2) 각 월은 몇일까지 있는가? (반복의 끝값)
+
+        function createCell(){
+            let n=0;
+
+            for(let a=0;a<6;a++){ //6층
+                for(let i=0;i<7;i++){ //7호수
+                    //constructor(container, x, y, width, height, text, bg)
+                    let cell = new Cell(content, i*100, a*100, 100,100, n, "pink");
+                    cellArray.push(cell); //생성된 셀을 배열에 담아두자
+                    n++;
+                }
+            }
+        }
+
+        addEventListener("load", function(){
+            content = document.getElementById("content");
+            title = document.getElementById("title");
+            
+            printTitle(); //제목출력
+            createCell();
+        });
+    </script>
+</head>
+<body>
+    
+    <div id="wrapper">
+        <div id="header">
+            <button onClick="prev()">이전</button>
+            <span id="title">2014년 12월</span>
+            <button onClick="next()">다음</button>
+        </div>
+        <div id="content"></div>
+    </div>
+
+</body>
+</html>

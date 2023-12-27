@@ -1,0 +1,36 @@
+<script>
+    //날짜 객체 생성하기 
+    let d = new Date();
+    console.log(d);
+
+    //현재 날짜 객체를 조작해보자 
+    //d.setDate(d.getDate()+100);
+
+    //과거의 6.25  발생일로 조작해보자 
+    //d.setFullYear(1950);
+    //d.setMonth(5); //6월 
+    //d.setDate(25);
+
+    //광복절  1945년 8월 15일 은 무슨 요일인가?
+    //d.setFullYear(1945);
+    //d.setMonth(7); //6월 
+    //d.setDate(15);
+
+    //2월달이 몇일까지 있는지 조사해보자 
+    d.setFullYear(2023);
+    d.setMonth(2); //3월 
+    d.setDate(0); //이전 달의 마지막일.. 이 시점에 자동으로 월도 바뀜
+
+    //날짜를 번역하기 위한 배열 선언 
+    let engArray=["Sun","Mon","Tue","Wed","Thur","Fri","Sat"];
+    let korArray=["일","월","화","수","목","금","토"];
+
+    console.log("현재 연도는 ", d.getFullYear());
+    console.log("현재 월은 ", d.getMonth());
+    console.log("현재 일은 ", d.getDate());
+    console.log("현재 요일은 ",  engArray[d.getDay()]);
+    console.log("현재 요일은 ",  korArray[d.getDay()]);
+
+
+</script>
+</script>

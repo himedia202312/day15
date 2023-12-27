@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #wrapper{
+            width:420px;
+            height:110px;
+            background-color: yellow;
+            margin: auto;        
+            position: relative;
+            overflow: hidden;
+        }
+        #detail{
+            width:420px;
+            height:380px;
+            background-color: aquamarine;
+            margin: auto;
+        }
+        #detail img{
+            width:100%;
+            height:100%;
+        }
+    </style>
+    <script>
+        let wrapper;
+        let imgArray=[
+            "img0.jpg","img1.jpg","img2.jpg","img3.jpg","img4.jpg","img5.jpg"
+        ];
+        let boxArray=[]; //여러개의 박스 객체를 받기 위한 배열
+        let flag=true;
+        let img; //현재 내가 보고있는 이미지 객체를 보관 undefined
+
+        //배너 광고를 정의 
+        class Box{
+            constructor(container, src, x, y, width, height, velX){
+                this.container=container;
+                this.img=document.createElement("img");
+                this.src=src;
+                this.x=x;
+                this.y=y;
+                this.width=width;
+                this.height=height;
+                this.velX=velX;
+                
+                this.img.src=this.src;
+
+                //이미지에 마우스 올려놓으면 flag=false (멈추기)
+                this.img.addEventListener("mouseover", function(){
+                    flag=false;
+                });
+
+                //이미지에 마우스 내려놓으면 flag=true (동작)
+                this.img.addEventListener("mouseout", function(){
+                    flag=true;
+                });
+
+                this.img.addEventListener("click", ()=>{
+                    //상세 이미지 출력
+                    getDetail(this.src);
+                });
+
+                
+                //style 정의 
+                this.img.style.position="absolute";
+                this.img.style.left=this.x+"px";
+                this.img.style.top=this.y+"px";
+
+                this.img.style.width=this.width+"px";
+                this.img.style.height=this.height+"px";
+
+                //부모의 요소에 부착 
+                this.container.appendChild(this.img);
+            }
+
+            move(){
+                this.x += this.velX; 
+                //좌측의 한계점에 도달하면, 다시 이미지의 맨끝으로 좌표를 수정
+                if(this.x < -(100+5)){
+                    //이미지갯수 * (너비  100+5)
+                    this.x = (boxArray.length-1) * (100+5);
+                }    
+                this.img.style.left= this.x+"px";
+            }
+        }
+
+        //이미지 상세처리 
+        function getDetail(path){
+            let detail = document.getElementById("detail");
+            
+            //존재한다면,먼지 지우기
+            if(img != undefined){
+                detail.removeChild(img);
+            }
+
+            img=document.createElement("img");
+            img.src=path;
+            detail.appendChild(img);
+        }
+
+        function createBox(){
+            for(let i=0;i<imgArray.length;i++){
+                let box = new Box(wrapper, "../images/Shrek/"+imgArray[i], i*(100+5), 5, 100, 100, -2 );
+                boxArray.push(box);//배열에 담기
+            }
+        }
+
+        function gameLoop(){
+
+            //생성된 박스 수만큼  move() 호출
+            if(flag){
+                for(let i=0;i<boxArray.length;i++){ 
+                    boxArray[i].move();
+                }
+            }
+        }
+
+        addEventListener("load", function(){
+            wrapper = document.getElementById("wrapper");
+
+            createBox(); //광고 셀 생성하기
+
+            setInterval("gameLoop()", 10);
+        });
+    </script>
+</head>
+<body>
+    <div id="wrapper"></div>
+    <div id="detail"></div>
+</body>
+</html>
