@@ -79,7 +79,8 @@
         function prev(){
             let mm = currentDate.getMonth(); //현재 월
             currentDate.setMonth(mm-1); 
-            printTitle();           
+            printTitle();     
+            printNum();      
         }
 
         //다음 월 처리 (현재 사용중인 날짜객체의 다음 월로 세팅)
@@ -87,20 +88,65 @@
             let mm = currentDate.getMonth(); //현재 월
             currentDate.setMonth(mm+1); 
             printTitle();
+            printNum();
         }
         
         //달력에 날짜를 출력하기 위해서는 개발자가 2가지 정보를 알아야 한다
         //1) 각 월은 무슨 요일부터 시작하는가?  (반복의 시작값)
         //2) 각 월은 몇일까지 있는가? (반복의 끝값)
 
-        function createCell(){
-            let n=0;
+        //각 월의 시작 요일 구하기 
+        function getStartDayOfWeek(){
+            let d = new Date(); // 망가져도 상관없는 날짜 객체 생성 
+            d.setFullYear(currentDate.getFullYear());//현재 내가 보고있는 연도
+            d.setMonth(currentDate.getMonth());//현재 내가 보고있는 월
+            d.setDate(1); //해당 월의 1일로 조작
 
+            return d.getDay(); //너 무슨 요일이니?
+        }
+
+        //각 월의 마지막 일 구하기 (몇일까지 있는지..)
+        function getLastDayOfMonth(){
+            let d = new Date(); //조작하거나 망가져도 상관없는 날짜 객체 
+
+            d.setFullYear(currentDate.getFullYear()); //현재 내가 보고있는 연도
+            d.setMonth(currentDate.getMonth()+1); //현재 내가 보고 있는 월 +1
+            d.setDate(0);//이 시점에 이전달로 자동 변경되며, 날짜는 마지막날에 가 있음
+            return d.getDate(); //너 몇일이니?
+        }
+
+
+
+        function createCell(){
             for(let a=0;a<6;a++){ //6층
+                let arr=[]; //한 층을 담는 배열
                 for(let i=0;i<7;i++){ //7호수
                     //constructor(container, x, y, width, height, text, bg)
-                    let cell = new Cell(content, i*100, a*100, 100,100, n, "pink");
-                    cellArray.push(cell); //생성된 셀을 배열에 담아두자
+                    let cell = new Cell(content, i*100, a*100, 100,100, "", "pink");
+                    arr.push(cell); //생성된 셀을 배열에 담아두자
+                }
+                cellArray.push(arr);
+            }
+        }
+        
+        //이차원 구조로 되어 있는, 셀들의 텍스트를 바꿀 수 있는 함수
+        function printNum(){
+            let n=0;
+            let d=0; //실제 날짜를 누적할 변 수(1일, 2일, 3일....)
+
+            for(let a=0;a<6;a++){ //층수만큼(week의 수 만큼)
+                for(let i=0;i<7;i++){ //호수만큼(요일 수 만큼)
+                    let cell = cellArray[a][i]; //지정한 좌표의 객체를 꺼내기
+
+                    let str="";//실제 div에 출력될 문자열
+                    if(n>=getStartDayOfWeek() && d<=getLastDayOfMonth()-1){ //각 월의 시작 요일 부터는..날짜를 센다...
+                        d++;
+                        cell.text=str;
+                        str=d;//날짜 범위 내에 잇을때는 날짜를 대입...
+                        cell.div.innerText=str;
+                    }else{
+                        str="";
+                    }
                     n++;
                 }
             }
@@ -112,6 +158,7 @@
             
             printTitle(); //제목출력
             createCell();
+            printNum(); //셀이 존재한 이후에 호출해야 함..
         });
     </script>
 </head>
